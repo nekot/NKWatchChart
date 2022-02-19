@@ -161,15 +161,20 @@
         
         // draw y unit
         if ([_yUnit length]) {
-            CGFloat height = [NKLineChart sizeOfString:_yUnit withWidth:30.f font:font].height;
-            CGRect drawRect = CGRectMake(_chartMargin + 10 + 5, 0, 30.f, height);
+//            CGFloat height = [NKLineChart sizeOfString:_yUnit withWidth:30.f font:font].height;
+//            CGRect drawRect = CGRectMake(_chartMargin + 10 + 5, 0, 30.f, height);
+            CGFloat height = [NKLineChart sizeOfString:_yUnit withWidth:200.f font:font].height;
+            CGRect drawRect = CGRectMake(_chartMargin + 10 + 5, 0, 200.f, height); // tokentoken
+
             [self drawTextInContext:ctx text:_yUnit inRect:drawRect font:font];
         }
         
         // draw x unit
         if ([_xUnit length]) {
             CGFloat height = [NKLineChart sizeOfString:_xUnit withWidth:30.f font:font].height;
+
             CGRect drawRect = CGRectMake(CGRectGetWidth(_frame) - _chartMargin - 10, _chartMargin + _chartCavanHeight - 2*height, 30.f, height);
+
             [self drawTextInContext:ctx text:_xUnit inRect:drawRect font:font];
         }
         
@@ -359,10 +364,26 @@
             } else {
                 innerGrade = (yValue - _yValueMin) / (_yValueMax - _yValueMin);
             }
+
+            CGFloat xValue = chartData.getData(i).x; // tokentoken from 0.0 to 1.0
+//            CGFloat offSetX = (_chartCavanWidth) / (chartData.itemCount);
             
-            CGFloat offSetX = (_chartCavanWidth) / (chartData.itemCount);
+//            int x = 2 * _chartMargin +  (i * offSetX); // これを参考にした tokentoken
             
-            int x = 2 * _chartMargin +  (i * offSetX);
+            // tokentoken 最大値を設定するため、xMax を追加した
+//            NSString * xmin = _xLabels[0]; // 0-24の場合、24
+//            NSString * xmax = _xLabels[([_xLabels count] - 1)]; // 0-24Hの場合、0 24-48Hの場合 24
+//            CGFloat xMin = [xmin floatValue] / 24.0f; // 1.0にするために24Hで割る
+//            CGLineCap xMax = [xmax floatValue] / 24.0f; // 1.0にするため24Hで割る
+//            CGLineCap xMax = 0.0f;
+
+//            NSLog(@"NKLineChart xmax(%@) xMax(%d)", xmax, xMax);
+            
+            // Xを固定値ではなく、変更できるようにした tokentoken
+//            int x = 1 * _chartMargin + _chartCavanWidth * (xValue + xMax); // tokentoken
+            
+            int x = 2 * _chartMargin + (_chartCavanWidth - _chartMargin) * xValue ; // tokentoken
+
             int y = _chartCavanHeight - (innerGrade * _chartCavanHeight) + (_yLabelHeight / 2);
             
             // Circular point
@@ -374,8 +395,7 @@
                 [pointPath moveToPoint:CGPointMake(circleCenter.x + (inflexionWidth / 2), circleCenter.y)];
                 [pointPath addArcWithCenter:circleCenter radius:inflexionWidth / 2 startAngle:0 endAngle:2 * M_PI clockwise:YES];
                 
-                if ( i != 0 ) {
-                    
+                if ( i != 0) {
                     // calculate the point for line
                     float distance = sqrt(pow(x - last_x, 2) + pow(y - last_y, 2) );
                     float last_x1 = last_x + (inflexionWidth / 2) / distance * (x - last_x);
@@ -383,8 +403,10 @@
                     float x1 = x - (inflexionWidth / 2) / distance * (x - last_x);
                     float y1 = y - (inflexionWidth / 2) / distance * (y - last_y);
                     
-                    [progressline moveToPoint:CGPointMake(last_x1, last_y1)];
-                    [progressline addLineToPoint:CGPointMake(x1, y1)];
+                    if(last_x != x && last_y != y) { // tokentoken
+                        [progressline moveToPoint:CGPointMake(last_x1, last_y1)];
+                        [progressline addLineToPoint:CGPointMake(x1, y1)];
+                    }
                     
                     [lineStartEndPointsArray addObject:[NSValue valueWithCGPoint:CGPointMake(last_x1, last_y1)]];
                     [lineStartEndPointsArray addObject:[NSValue valueWithCGPoint:CGPointMake(x1, y1)]];

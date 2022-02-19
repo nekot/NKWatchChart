@@ -12,8 +12,10 @@
 @interface NKLineChartDataItem : NSObject
 
 + (NKLineChartDataItem *)dataItemWithY:(CGFloat)y;
++ (NKLineChartDataItem *)dataItemWithY:(CGFloat)y withX:(CGFloat)x;
 
 @property (readonly) CGFloat y; // should be within the y range
+@property (readonly) CGFloat x; // should be within the x range
 
 
 @end

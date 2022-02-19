@@ -11,8 +11,10 @@
 @interface NKLineChartDataItem ()
 
 - (id)initWithY:(CGFloat)y;
+- (id)initWithY:(CGFloat)y withX:(CGFloat)x;
 
 @property (readwrite) CGFloat y; // should be within the y range
+@property (readwrite) CGFloat x; // should be within the y range
 
 @end
 
@@ -23,6 +25,13 @@
     return [[NKLineChartDataItem alloc] initWithY:y];
 }
 
++ (NKLineChartDataItem *)dataItemWithY:(CGFloat)y withX:(CGFloat)x
+{
+    NKLineChartDataItem *item = [[NKLineChartDataItem alloc]initWithY:y];
+    item.x = x;
+    return item;
+}
+
 - (id)initWithY:(CGFloat)y
 {
     if ((self = [super init])) {
@@ -31,5 +40,6 @@
     
     return self;
 }
+
 
 @end
